@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haq Driving — Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#1a3a5c;--navy-700:#15304d;--navy-800:#11263e;
+  --blue:#2563EB;--blue-hover:#1D4ED8;--blue-soft:#EFF5FF;
+  --ink:#0F1B2A;--body:#475467;--muted:#6B7585;
+  --line:#E5E9F0;--line-soft:#EEF1F6;--bg:#F4F7FB;--card:#fff;
+  --green:#16A34A;--green-soft:#E4F3EA;
+  --amber:#D97706;--amber-soft:#FEF3E2;
+  --red:#DC2626;--red-soft:#FDECEC;
+  --star:#FBBF24;
+  --r:12px;--r-sm:9px;
+  --sh-sm:0 1px 3px rgba(16,33,54,.06),0 1px 2px rgba(16,33,54,.04);
+  --sh-md:0 6px 20px rgba(16,33,54,.10);
+  --sh-lg:0 20px 50px rgba(16,33,54,.22);
+  --sb-w:256px;
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4{color:var(--ink);letter-spacing:-.02em;line-height:1.2}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#CBD6E6;border-radius:100px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:#B3C2D8}
+
+/* ── Login screen ── */
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;background:linear-gradient(135deg,var(--navy-800) 0%,var(--navy) 100%)}
+.login-card{background:#fff;border-radius:18px;padding:40px 36px;width:100%;max-width:400px;box-shadow:var(--sh-lg)}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.login-badge{width:46px;height:46px;border-radius:11px;background:var(--blue);display:grid;place-items:center;font-weight:800;font-size:18px;color:#fff}
+.login-card h1{font-size:22px;margin-bottom:4px}
+.login-card .sub{font-size:14px;color:var(--muted);margin-bottom:28px}
+.login-field{margin-bottom:16px}
+.login-field label{display:block;font-size:13px;font-weight:600;color:#34425A;margin-bottom:7px}
+.login-field input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--r-sm);font-size:15px;color:var(--ink);background:#FBFCFE;transition:border-color .15s,box-shadow .15s;outline:none}
+.login-field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.login-err{font-size:13px;color:var(--red);margin-bottom:14px;display:none}
+.login-btn{width:100%;padding:14px;border-radius:var(--r-sm);background:var(--blue);color:#fff;font-size:15px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:background .15s}
+.login-btn:hover{background:var(--blue-hover)}
+.login-btn:disabled{opacity:.6;cursor:default}
+
+/* ── App shell ── */
+.app{display:none;min-height:100vh}
+.app.visible{display:flex}
+.sidebar{width:var(--sb-w);flex:none;background:var(--navy);color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:40}
+.sb-brand{display:flex;align-items:center;gap:11px;padding:20px 20px 18px}
+.sb-badge{width:36px;height:36px;border-radius:9px;background:var(--blue);display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff;flex:none}
+.sb-brand .t{font-weight:800;color:#fff;font-size:14px;line-height:1.1}
+.sb-brand .s{font-size:11px;color:#93A8C2}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 12px 16px;display:flex;flex-direction:column;gap:2px}
+.sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-color:transparent}
+.sb-sep{height:1px;background:rgba(255,255,255,.09);margin:10px 8px}
+.sb-link{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;font-size:14px;font-weight:500;color:#C4D2E4;transition:background .15s,color .15s;width:100%;text-align:left;cursor:pointer}
+.sb-link svg{width:18px;height:18px;flex:none;opacity:.9}
+.sb-link:hover{background:rgba(255,255,255,.07);color:#fff}
+.sb-link.active{background:var(--blue);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.35)}
+.sb-link.active svg{opacity:1}
+.sb-link .badge-n{margin-left:auto;background:rgba(255,255,255,.16);color:#fff;font-size:11px;font-weight:700;padding:1px 7px;border-radius:100px}
+.sb-link.danger{color:#F0A8A8}
+.sb-link.danger:hover{background:rgba(220,38,38,.18);color:#fff}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 32px;height:64px}
+.tb-burger{display:none;width:40px;height:40px;border-radius:9px;border:1px solid var(--line);place-items:center}
+.tb-burger svg{width:20px;height:20px;color:var(--navy)}
+.tb-title{font-size:18px;font-weight:700;color:var(--ink)}
+.tb-crumb{font-size:12px;color:var(--muted)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2C5685,var(--navy));display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;flex:none}
+.view{padding:28px 32px 64px;max-width:1120px;width:100%;margin:0 auto}
+.view.hidden{display:none}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;font-weight:600;padding:10px 16px;border-radius:var(--r-sm);transition:background .15s,transform .12s,box-shadow .15s,border-color .15s;white-space:nowrap;cursor:pointer;border:none;font-family:inherit}
+.btn svg{width:16px;height:16px}
+.btn--primary{background:var(--blue);color:#fff;box-shadow:0 3px 10px rgba(37,99,235,.25)}
+.btn--primary:hover{background:var(--blue-hover)}
+.btn--ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.btn--ghost:hover{border-color:#C7D3E6;background:#FAFCFF}
+.btn--danger{background:#fff;color:var(--red);border:1px solid #F2C9C9}
+.btn--danger:hover{background:var(--red-soft)}
+.btn--danger-solid{background:var(--red);color:#fff;border:none}
+.btn--danger-solid:hover{background:#B91C1C}
+.btn--sm{padding:7px 12px;font-size:12.5px}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.5;pointer-events:none}
+
+/* ── Cards ── */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-sm)}
+.card-pad{padding:22px}
+.card-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line-soft)}
+.card-head h3{font-size:15px;font-weight:700}
+.card-head .sub{font-size:12.5px;color:var(--muted)}
+.card-head .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.page-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px}
+.page-head .pt{font-size:22px;font-weight:800;color:var(--ink)}
+.page-head .ps{font-size:14px;color:var(--muted);margin-top:3px}
+.page-head .actions{margin-left:auto;display:flex;gap:10px}
+.section-stack{display:flex;flex-direction:column;gap:20px}
+
+/* ── Stat cards ── */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.stat-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh-sm)}
+.stat-card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.stat-ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center}
+.stat-ic svg{width:20px;height:20px}
+.stat-card .val{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.03em}
+.stat-card .lbl{font-size:13px;color:var(--muted);margin-top:2px}
+.delta{font-size:12px;font-weight:600;padding:3px 8px;border-radius:100px;display:inline-flex;align-items:center;gap:3px}
+.delta.up{background:var(--green-soft);color:var(--green)}
+.delta.flat{background:#EEF1F6;color:var(--muted)}
+
+/* ── Forms ── */
+.field{margin-bottom:18px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:13px;font-weight:600;color:#34425A;margin-bottom:7px}
+.field .hint{font-size:12px;color:var(--muted);font-weight:400;margin-left:6px}
+.inp,.field input,.field select,.field textarea{width:100%;font-size:14px;color:var(--ink);padding:10px 13px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:#FBFCFE;transition:border-color .15s,box-shadow .15s;outline:none;font-family:inherit}
+.field textarea{resize:vertical;min-height:90px;line-height:1.55}
+.inp:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12);background:#fff}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+/* ── Toggle ── */
+.toggle{position:relative;width:42px;height:24px;flex:none}
+.toggle input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.toggle .track{position:absolute;inset:0;background:#CBD5E1;border-radius:100px;transition:background .18s}
+.toggle .thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle input:checked+.track{background:var(--blue)}
+.toggle input:checked+.track+.thumb{transform:translateX(18px)}
+.toggle-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line-soft)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-row .tr-txt b{font-size:14px;color:var(--ink);font-weight:600;display:block}
+.toggle-row .tr-txt span{font-size:12.5px;color:var(--muted)}
+.toggle-row .toggle{margin-left:auto}
+
+/* ── Toast ── */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:300;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:11px;background:var(--ink);color:#fff;padding:13px 18px;border-radius:11px;box-shadow:var(--sh-lg);font-size:14px;font-weight:500;animation:toastIn .28s cubic-bezier(.2,.8,.3,1);pointer-events:none}
+.toast .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--green)}
+.toast .ic svg{width:13px;height:13px;color:#fff}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+.toast.out{animation:toastOut .25s forwards}
+@keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
+
+/* ── Modal ── */
+.modal-back{position:fixed;inset:0;background:rgba(15,27,42,.5);z-index:200;display:grid;place-items:center;padding:24px;animation:mfade .18s}
+@keyframes mfade{from{opacity:0}}
+.modal{background:#fff;border-radius:16px;box-shadow:var(--sh-lg);width:100%;max-width:500px;max-height:88vh;overflow-y:auto;animation:mslide .24s cubic-bezier(.2,.8,.3,1)}
+@keyframes mslide{from{opacity:0;transform:translateY(16px) scale(.97)}}
+.modal-head{display:flex;align-items:center;gap:12px;padding:20px 22px;border-bottom:1px solid var(--line-soft)}
+.modal-head h3{font-size:17px;font-weight:700}
+.modal-head .x{margin-left:auto;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:var(--muted);cursor:pointer}
+.modal-head .x:hover{background:var(--bg);color:var(--ink)}
+.modal-head .x svg{width:18px;height:18px}
+.modal-body{padding:22px}
+.modal-foot{display:flex;gap:10px;justify-content:flex-end;padding:16px 22px;border-top:1px solid var(--line-soft)}
+
+/* ── Tables ── */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+.tbl td{padding:14px 16px;border-bottom:1px solid var(--line-soft);color:var(--ink);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#FAFCFF}
+.badge-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:12px;font-weight:600}
+.badge-new{background:var(--blue-soft);color:var(--blue)}
+.badge-read{background:#EEF1F6;color:var(--muted)}
+
+/* ── Activity ── */
+.act-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line-soft)}
+.act-row:last-child{border-bottom:none}
+.act-ic{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;flex:none}
+.act-ic svg{width:17px;height:17px}
+.act-txt{font-size:13.5px;color:var(--ink)}
+.act-txt b{font-weight:600}
+.act-time{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* ── Quick actions ── */
+.qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.qa{display:flex;align-items:center;gap:13px;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:#fff;text-align:left;transition:border-color .15s,transform .15s,box-shadow .15s;cursor:pointer;font-family:inherit}
+.qa:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:var(--sh-md)}
+.qa-ic{width:42px;height:42px;border-radius:10px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;flex:none}
+.qa-ic svg{width:20px;height:20px}
+.qa b{font-size:14px;color:var(--ink);display:block}
+.qa span{font-size:12.5px;color:var(--muted)}
+
+/* ── Unsaved bar ── */
+.unsaved-bar{position:sticky;top:64px;z-index:20;display:flex;align-items:center;gap:12px;background:var(--amber-soft);border:1px solid #F5D9A8;color:#92580C;padding:11px 18px;border-radius:11px;font-size:13.5px;font-weight:500;margin-bottom:20px;box-shadow:var(--sh-sm)}
+.unsaved-bar svg{width:18px;height:18px;flex:none}
+.unsaved-bar .sp{margin-left:auto;display:flex;gap:8px}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state svg{width:40px;height:40px;color:#C7D3E6;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto}
+.empty-state b{color:var(--ink);font-size:15px;display:block;margin-bottom:4px}
+
+/* ── Hours ── */
+.hours-row{display:grid;grid-template-columns:110px 1fr auto;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line-soft)}
+.hours-row:last-child{border-bottom:none}
+.hours-row .day{font-size:13.5px;font-weight:600;color:var(--ink)}
+.hours-times{display:flex;align-items:center;gap:8px}
+.hours-times input{width:110px;padding:7px 10px;font-size:13px}
+.hours-times .dash{color:var(--muted)}
+.hours-row .closed-lbl{font-size:13px;color:var(--muted);font-style:italic}
+.hours-toggle{display:flex;align-items:center;gap:8px}
+.hours-toggle span{font-size:12px;color:var(--muted)}
+
+/* ── Responsive sidebar ── */
+.sb-backdrop{display:none}
+@media(max-width:1000px){
+  .sidebar{position:fixed;left:0;top:0;z-index:120;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:var(--sh-lg)}
+  .sidebar.open{transform:translateX(0)}
+  .sb-backdrop{display:block;position:fixed;inset:0;background:rgba(15,27,42,.5);z-index:110;opacity:0;pointer-events:none;transition:opacity .25s}
+  .sb-backdrop.open{opacity:1;pointer-events:auto}
+  .tb-burger{display:grid}
+  .topbar{padding:0 20px}
+  .view{padding:22px 20px 60px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .qa-grid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .grid-2{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr}
+  .page-head{flex-direction:column}
+  .page-head .actions{margin-left:0;width:100%}
+  .hours-row{grid-template-columns:1fr;gap:8px}
+  .toast-wrap{left:16px;right:16px;bottom:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-badge">HD</div>
+      <div>
+        <div style="font-weight:800;font-size:16px;color:var(--ink)">Haq Driving</div>
+        <div style="font-size:12px;color:var(--muted)">Admin Dashboard</div>
+      </div>
+    </div>
+    <h1>Sign in</h1>
+    <p class="sub">Enter your credentials to access the dashboard.</p>
+    <div class="login-field">
+      <label for="l-email">Email</label>
+      <input type="email" id="l-email" placeholder="admin@haqdriving.com.au" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <label for="l-pass">Password</label>
+      <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <p class="login-err" id="loginErr">Incorrect email or password.</p>
+    <button class="login-btn" id="loginBtn">Sign In</button>
+  </div>
+</div>
+
+<!-- ── APP SHELL ── -->
+<div class="app" id="appShell">
+  <div class="sb-backdrop" id="sbBackdrop"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-badge">HD</div>
+      <div><div class="t">HD Admin</div><div class="s">Haq Driving</div></div>
+    </div>
+    <nav class="sb-nav" id="sbNav">
+      <button class="sb-link active" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="sb-link" data-view="enquiries">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        Enquiries
+        <span class="badge-n" id="sbEnqCount">0</span>
+      </button>
+      <button class="sb-link" data-view="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68V9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Site Settings
+      </button>
+      <button class="sb-link" data-view="packages">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Lesson Packages
+      </button>
+      <button class="sb-link" data-view="faq">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        FAQ Manager
+      </button>
+      <button class="sb-link" data-view="areas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Service Areas
+      </button>
+      <button class="sb-link" data-view="contact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Contact Details
+      </button>
+      <div class="sb-sep"></div>
+      <button class="sb-link" onclick="window.open('../','_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        Preview Website
+      </button>
+      <button class="sb-link danger" id="logoutBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </button>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="tb-burger" id="tbBurger" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div>
+        <div class="tb-crumb">Haq Driving Admin</div>
+        <div class="tb-title" id="tbTitle">Dashboard</div>
+      </div>
+      <div class="tb-right">
+        <div class="avatar">AD</div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <div class="view" id="view-dashboard">
+      <div class="page-head">
+        <div><div class="pt">Welcome back 👋</div><div class="ps">Here's what's happening with your site.</div></div>
+        <div class="actions">
+          <button class="btn btn--ghost" onclick="window.open('../','_blank')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            Preview Website
+          </button>
+        </div>
+      </div>
+      <div class="stat-grid" style="margin-bottom:22px" id="dashStats"></div>
+      <div class="card" style="margin-bottom:22px">
+        <div class="card-head"><h3>Quick Actions</h3><span class="sub">Jump to common edits</span></div>
+        <div class="card-pad">
+          <div class="qa-grid">
+            <button class="qa" data-goto="enquiries">
+              <span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
+              <span><b>View Enquiries</b><span>New booking requests</span></span>
+            </button>
+            <button class="qa" data-goto="packages">
+              <span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+              <span><b>Update Pricing</b><span>Edit lesson packages</span></span>
+            </button>
+            <button class="qa" data-goto="settings">
+              <span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></span>
+              <span><b>Edit Homepage</b><span>Hero text &amp; stats</span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Recent Enquiries</h3><div class="right"><button class="btn btn--ghost btn--sm" data-goto="enquiries">View All</button></div></div>
+        <div class="card-pad" style="padding:0">
+          <div class="tbl-wrap"><table class="tbl" id="dashEnqTable">
+            <thead><tr><th>Name</th><th>Lesson Type</th><th>Phone</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="dashEnqBody"></tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENQUIRIES -->
+    <div class="view hidden" id="view-enquiries">
+      <div class="page-head">
+        <div><div class="pt">Enquiries</div><div class="ps">All booking requests from the website.</div></div>
+        <div class="actions">
+          <button class="btn btn--ghost" id="refreshEnq">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-pad" style="padding:0">
+          <div class="tbl-wrap"><table class="tbl" id="enqTable">
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Lesson Type</th><th>Message</th><th>Date</th><th>Status</th><th></th></tr></thead>
+            <tbody id="enqBody"></tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SITE SETTINGS -->
+    <div class="view hidden" id="view-settings">
+      <div class="page-head">
+        <div><div class="pt">Site Settings</div><div class="ps">Homepage hero content and key stats.</div></div>
+        <div class="actions">
+          <button class="btn btn--primary" id="saveSettings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </div>
+      <div id="settingsUnsaved" class="unsaved-bar" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        You have unsaved changes.
+        <span class="sp">
+          <button class="btn btn--ghost btn--sm" id="discardSettings">Discard</button>
+          <button class="btn btn--primary btn--sm" id="saveSettings2">Save now</button>
+        </span>
+      </div>
+      <div class="section-stack">
+        <div class="card">
+          <div class="card-head"><h3>Business Details</h3></div>
+          <div class="card-pad">
+            <div class="field"><label>Business Name</label><input id="s-bizName" type="text"></div>
+            <div class="field"><label>Tagline</label><input id="s-tagline" type="text"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Homepage Hero</h3><span class="sub">Wrap a word in [brackets] to highlight it blue</span></div>
+          <div class="card-pad">
+            <div class="field"><label>Headline</label><input id="s-headline" type="text"></div>
+            <div id="s-headlinePreview" style="margin:-4px 0 14px;font-size:13px;color:var(--muted)"></div>
+            <div class="field"><label>Subtext</label><textarea id="s-subtext" rows="3"></textarea></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Stats Bar</h3><span class="sub">The 4 numbers in the navy band</span></div>
+          <div class="card-pad">
+            <div class="grid-2" id="s-statsGrid"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Section Visibility</h3></div>
+          <div class="card-pad" style="padding-top:6px;padding-bottom:6px" id="s-sectionsEl"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACKAGES -->
+    <div class="view hidden" id="view-packages">
+      <div class="page-head">
+        <div><div class="pt">Lesson Packages</div><div class="ps">Pricing cards shown on the website.</div></div>
+        <div class="actions">
+          <button class="btn btn--ghost" id="addPkgBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Package
+          </button>
+          <button class="btn btn--primary" id="savePkgs">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </div>
+      <div id="pkgsUnsaved" class="unsaved-bar" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        You have unsaved changes.
+        <span class="sp"><button class="btn btn--primary btn--sm" id="savePkgs2">Save now</button></span>
+      </div>
+      <div id="pkgGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start"></div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="view hidden" id="view-faq">
+      <div class="page-head">
+        <div><div class="pt">FAQ Manager</div><div class="ps">Questions shown in the accordion.</div></div>
+        <div class="actions">
+          <button class="btn btn--ghost" id="addFaqBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add FAQ
+          </button>
+          <button class="btn btn--primary" id="saveFaqs">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </div>
+      <div id="faqsUnsaved" class="unsaved-bar" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        You have unsaved changes.
+        <span class="sp"><button class="btn btn--primary btn--sm" id="saveFaqs2">Save now</button></span>
+      </div>
+      <div id="faqList"></div>
+    </div>
+
+    <!-- SERVICE AREAS -->
+    <div class="view hidden" id="view-areas">
+      <div class="page-head">
+        <div><div class="pt">Service Areas</div><div class="ps">Suburbs shown as location pills on the website.</div></div>
+        <div class="actions">
+          <button class="btn btn--primary" id="saveAreas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </div>
+      <div id="areasUnsaved" class="unsaved-bar" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        You have unsaved changes.
+        <span class="sp"><button class="btn btn--primary btn--sm" id="saveAreas2">Save now</button></span>
+      </div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-head"><h3>Add an Area</h3></div>
+        <div class="card-pad">
+          <div style="display:flex;gap:10px">
+            <input class="inp" id="areaInput" type="text" placeholder="e.g. Bankstown" style="flex:1">
+            <button class="btn btn--primary" id="addAreaBtn">Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Current Areas</h3><span class="sub" id="areaCount"></span></div>
+        <div class="card-pad"><div id="areaPills" style="display:flex;flex-wrap:wrap;gap:10px"></div></div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="view hidden" id="view-contact">
+      <div class="page-head">
+        <div><div class="pt">Contact Details</div><div class="ps">Phone, email, address and business hours.</div></div>
+        <div class="actions">
+          <button class="btn btn--primary" id="saveContact">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </div>
+      <div id="contactUnsaved" class="unsaved-bar" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        You have unsaved changes.
+        <span class="sp"><button class="btn btn--primary btn--sm" id="saveContact2">Save now</button></span>
+      </div>
+      <div class="section-stack">
+        <div class="card">
+          <div class="card-head"><h3>Primary Details</h3></div>
+          <div class="card-pad">
+            <div class="grid-2">
+              <div class="field"><label>Phone Number</label><input id="c-phone" type="tel"></div>
+              <div class="field"><label>Email Address</label><input id="c-email" type="email"></div>
+            </div>
+            <div class="field"><label>Address</label><textarea id="c-address" rows="2"></textarea></div>
+            <div class="field"><label>WhatsApp Number <span style="font-size:12px;color:var(--muted);font-weight:400">(digits only, e.g. 61450000000)</span></label><input id="c-wa" type="text"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Business Hours</h3></div>
+          <div class="card-pad" style="padding-top:6px;padding-bottom:6px" id="hoursEl"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- Confirm modal -->
+<div class="modal-back" id="confirmModal" style="display:none">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h3 id="confirmTitle">Confirm</h3><button class="x" id="confirmClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-body"><p id="confirmMsg" style="font-size:14px;color:var(--body);line-height:1.6"></p></div>
+    <div class="modal-foot">
+      <button class="btn btn--ghost" id="confirmCancel">Cancel</button>
+      <button class="btn btn--danger-solid" id="confirmOk">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+// ── Helpers ──────────────────────────────────────────────────
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function uid(){ return '_'+Math.random().toString(36).slice(2,9); }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function eq(a,b){ return JSON.stringify(a)===JSON.stringify(b); }
+function fmt(iso){ return iso ? new Date(iso).toLocaleString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—'; }
+
+// ── Toast ─────────────────────────────────────────────────────
+function toast(msg){
+  var w=document.getElementById('toastWrap');
+  var el=document.createElement('div');
+  el.className='toast';
+  el.innerHTML='<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'+esc(msg);
+  w.appendChild(el);
+  setTimeout(function(){ el.classList.add('out'); setTimeout(function(){ el.remove(); },300); },2800);
+}
+
+// ── Confirm ───────────────────────────────────────────────────
+var confirmCb=null;
+function confirm(title,msg,cb){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmMsg').textContent=msg;
+  document.getElementById('confirmModal').style.display='grid';
+  confirmCb=cb;
+}
+document.getElementById('confirmClose').onclick=document.getElementById('confirmCancel').onclick=function(){ document.getElementById('confirmModal').style.display='none'; };
+document.getElementById('confirmOk').onclick=function(){ if(confirmCb){ confirmCb(); } document.getElementById('confirmModal').style.display='none'; };
+
+// ── Navigation ────────────────────────────────────────────────
+var currentView='dashboard';
+var titles={dashboard:'Dashboard',enquiries:'Enquiries',settings:'Site Settings',packages:'Lesson Packages',faq:'FAQ Manager',areas:'Service Areas',contact:'Contact Details'};
+function goTo(id){
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.add('hidden'); });
+  var el=document.getElementById('view-'+id);
+  if(el) el.classList.remove('hidden');
+  document.querySelectorAll('.sb-link[data-view]').forEach(function(l){ l.classList.toggle('active', l.getAttribute('data-view')===id); });
+  document.getElementById('tbTitle').textContent=titles[id]||id;
+  currentView=id;
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbBackdrop').classList.remove('open');
+  document.body.style.overflow='';
+  window.scrollTo(0,0);
+  if(id==='enquiries') loadEnquiries();
+  if(id==='dashboard') loadDashboard();
+}
+document.querySelectorAll('.sb-link[data-view]').forEach(function(l){
+  l.addEventListener('click', function(){ goTo(l.getAttribute('data-view')); });
+});
+document.querySelectorAll('[data-goto]').forEach(function(el){
+  el.addEventListener('click', function(){ goTo(el.getAttribute('data-goto')); });
+});
+// sidebar burger
+var tbBurger=document.getElementById('tbBurger');
+var sidebar=document.getElementById('sidebar');
+var sbBackdrop=document.getElementById('sbBackdrop');
+tbBurger.onclick=function(){ sidebar.classList.add('open'); sbBackdrop.classList.add('open'); document.body.style.overflow='hidden'; };
+sbBackdrop.onclick=function(){ sidebar.classList.remove('open'); sbBackdrop.classList.remove('open'); document.body.style.overflow=''; };
+
+// ── Store (localStorage) ──────────────────────────────────────
+var STORE_KEY='haqadmin_v1';
+var DEFAULTS={
+  business:{ name:'Haq Driving', tagline:'Driving School · Sydney NSW' },
+  hero:{ headline:'Learn to Drive with [Confidence]', subtext:'Professional driving lessons across Sydney. Patient, qualified instruction in automatic vehicles — available 7 days a week to fit your schedule.' },
+  stats:[
+    {id:'s1',value:'400+',label:'Students Trained'},
+    {id:'s2',value:'95%',label:'Test Pass Rate'},
+    {id:'s3',value:'5',label:'Star Reviews'},
+    {id:'s4',value:'7 Days',label:'Flexible Lesson Times'},
+  ],
+  sections:[
+    {id:'why',label:'Why Choose Us',desc:'6 feature cards',on:true},
+    {id:'lessons',label:'Lesson Types',desc:'4 lesson cards',on:true},
+    {id:'stats',label:'Stats Bar',desc:'Navy band with 4 numbers',on:true},
+    {id:'stories',label:'Success Stories',desc:'Testimonial carousel',on:true},
+    {id:'reviews',label:'Google Reviews',desc:'Review cards',on:true},
+    {id:'packages',label:'Lesson Packages',desc:'Pricing cards',on:true},
+    {id:'areas',label:'Service Areas',desc:'Suburb pills + map',on:true},
+    {id:'faq',label:'FAQ',desc:'Accordion of questions',on:true},
+  ],
+  packages:[
+    {id:'pk1',name:'Single Lesson',price:'$75',duration:'/ 1 hour',popular:false,button:'Book Now',feats:['1 hour driving lesson','Pick-up & drop-off','Automatic vehicle']},
+    {id:'pk2',name:'5 Lesson Package',price:'$345',duration:'/ 5 hours',popular:true,button:'Book Now',feats:['5 × 1hr lessons','Personalised lesson plan','Save $30 vs single lessons']},
+    {id:'pk3',name:'10 Lesson Package',price:'$650',duration:'/ 10 hours',popular:false,button:'Book Now',feats:['10 × 1hr lessons','Full test preparation','Best value — save $100']},
+  ],
+  faqs:[
+    {id:'f1',q:'How long is each lesson?',a:'Standard lessons run for 1 hour. We also offer 1.5 and 2 hour sessions. Test-day packages include a warm-up lesson.'},
+    {id:'f2',q:'Do you provide the car for the driving test?',a:'Yes. Our dual-control automatic vehicle is available for your NSW driving test, including a pre-test warm-up lesson.'},
+    {id:'f3',q:'Do you offer automatic lessons?',a:'All lessons are in modern automatic vehicles, which most learners find easier and less stressful.'},
+    {id:'f4',q:'Can beginners start with no experience?',a:'Absolutely. We start with the basics in quiet streets and build up at your own pace.'},
+    {id:'f5',q:'What areas do you service?',a:'We cover Parramatta, Blacktown, Auburn, Liverpool, Merrylands, Granville, Wentworthville, Fairfield, Penrith and Campbelltown.'},
+    {id:'f6',q:'Is pick-up and drop-off included?',a:'Yes. We pick you up from your home, school or workplace and drop you back after the lesson.'},
+  ],
+  areas:['Parramatta','Blacktown','Auburn','Liverpool','Merrylands','Granville','Wentworthville','Fairfield','Penrith','Campbelltown'],
+  contact:{
+    phone:'0450 000 000',
+    email:'info@haqdriving.com.au',
+    address:'Sydney NSW, Australia',
+    wa:'61450000000',
+    hours:[
+      {day:'Monday',open:'06:00',close:'20:00',closed:false},
+      {day:'Tuesday',open:'06:00',close:'20:00',closed:false},
+      {day:'Wednesday',open:'06:00',close:'20:00',closed:false},
+      {day:'Thursday',open:'06:00',close:'20:00',closed:false},
+      {day:'Friday',open:'06:00',close:'20:00',closed:false},
+      {day:'Saturday',open:'07:00',close:'18:00',closed:false},
+      {day:'Sunday',open:'08:00',close:'17:00',closed:false},
+    ],
+  },
+};
+function loadStore(){
+  try{ var s=localStorage.getItem(STORE_KEY); if(s) return Object.assign({},DEFAULTS,JSON.parse(s)); } catch(e){}
+  return clone(DEFAULTS);
+}
+function saveStore(data){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(data)); }catch(e){} }
+var store=loadStore();
+function persist(key,val){ store[key]=val; saveStore(store); }
+
+// ── Auth (simple Supabase email/password) ─────────────────────
+var sbClient=null;
+function initLogin(){
+  var btn=document.getElementById('loginBtn');
+  var err=document.getElementById('loginErr');
+  function doLogin(){
+    var email=document.getElementById('l-email').value.trim();
+    var pass=document.getElementById('l-pass').value;
+    if(!email||!pass){ err.style.display='block'; err.textContent='Please enter email and password.'; return; }
+    btn.disabled=true; btn.textContent='Signing in…';
+    sbClient.auth.signInWithPassword({email,password:pass}).then(function(r){
+      if(r.error){ err.style.display='block'; err.textContent=r.error.message||'Incorrect email or password.'; btn.disabled=false; btn.textContent='Sign In'; }
+      else{ showApp(); }
+    }).catch(function(){ err.style.display='block'; err.textContent='Login failed. Check your connection.'; btn.disabled=false; btn.textContent='Sign In'; });
+  }
+  btn.addEventListener('click', doLogin);
+  document.getElementById('l-pass').addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); });
+}
+function showApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appShell').classList.add('visible');
+  initViews();
+  loadDashboard();
+}
+document.getElementById('logoutBtn').addEventListener('click',function(){
+  if(sbClient) sbClient.auth.signOut();
+  document.getElementById('appShell').classList.remove('visible');
+  document.getElementById('loginScreen').style.display='flex';
+});
+
+// ── Enquiries ─────────────────────────────────────────────────
+async function loadEnquiries(){
+  if(!sbClient) return;
+  var tbody=document.getElementById('enqBody');
+  tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">Loading…</td></tr>';
+  var {data,error}=await sbClient.from('enquiries').select('*').order('created_at',{ascending:false}).limit(100);
+  if(error){ tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--red)">Error loading enquiries: '+esc(error.message)+'</td></tr>'; return; }
+  if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg><b>No enquiries yet</b>They\'ll appear here when customers submit the form.</div></td></tr>'; return; }
+  tbody.innerHTML=data.map(function(r){
+    var isNew=!r.read_at;
+    return '<tr><td><b>'+esc(r.full_name||'')+'</b></td><td style="font-size:13px">'+esc(r.email||'')+'</td><td style="font-size:13px">'+esc(r.phone||'')+'</td><td style="font-size:13px">'+esc(r.lesson_type||'')+'</td><td style="font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.message||'—')+'</td><td style="font-size:12px;white-space:nowrap">'+esc(fmt(r.created_at))+'</td><td><span class="badge-pill '+(isNew?'badge-new':'badge-read')+'">'+(isNew?'New':'Read')+'</span></td><td><a href="mailto:'+esc(r.email)+'" class="btn btn--ghost btn--sm">Reply</a></td></tr>';
+  }).join('');
+  // update badge
+  var unread=data.filter(function(r){return !r.read_at;}).length;
+  document.getElementById('sbEnqCount').textContent=unread||'';
+}
+document.getElementById('refreshEnq').addEventListener('click',function(){ loadEnquiries(); toast('Enquiries refreshed'); });
+
+// ── Dashboard ─────────────────────────────────────────────────
+async function loadDashboard(){
+  document.getElementById('dashStats').innerHTML=[
+    {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',color:'#2563EB',bg:'#EFF5FF',id:'stat-enq',val:'—',lbl:'Total Enquiries',delta:'Loading'},
+    {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',color:'#16A34A',bg:'#E4F3EA',id:'stat-new',val:'—',lbl:'Unread Enquiries',delta:'New'},
+    {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',color:'#D97706',bg:'#FEF3E2',id:'stat-pkg',val:store.packages.length,lbl:'Active Packages',delta:'Live'},
+    {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',color:'#7C3AED',bg:'#F3EEFF',id:'stat-faq',val:store.faqs.length,lbl:'FAQ Items',delta:'Live'},
+  ].map(function(s){
+    return '<div class="stat-card"><div class="top"><div class="stat-ic" style="background:'+s.bg+';color:'+s.color+'">'+s.ic+'</div><span class="delta flat">'+esc(s.delta)+'</span></div><div class="val" id="'+s.id+'">'+esc(String(s.val))+'</div><div class="lbl">'+esc(s.lbl)+'</div></div>';
+  }).join('');
+
+  // load recent enquiries for dashboard
+  var dashBody=document.getElementById('dashEnqBody');
+  dashBody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted)">Loading…</td></tr>';
+  if(!sbClient){ dashBody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted)">Connect to Supabase to view enquiries.</td></tr>'; return; }
+  var {data}=await sbClient.from('enquiries').select('full_name,lesson_type,phone,created_at,read_at').order('created_at',{ascending:false}).limit(5);
+  if(!data||!data.length){ dashBody.innerHTML='<tr><td colspan="5"><div class="empty-state"><b>No enquiries yet</b></div></td></tr>'; }
+  else{
+    dashBody.innerHTML=data.map(function(r){ return '<tr><td><b>'+esc(r.full_name||'')+'</b></td><td style="font-size:13px">'+esc(r.lesson_type||'')+'</td><td style="font-size:13px">'+esc(r.phone||'')+'</td><td style="font-size:12px">'+esc(fmt(r.created_at))+'</td><td><span class="badge-pill '+(r.read_at?'badge-read':'badge-new')+'">'+(r.read_at?'Read':'New')+'</span></td></tr>'; }).join('');
+    var total=data.length, unread=data.filter(function(r){return !r.read_at;}).length;
+    // refresh counts
+    sbClient.from('enquiries').select('id',{count:'exact'}).then(function(r){ if(!r.error){ document.getElementById('stat-enq').textContent=r.count||0; } });
+    document.getElementById('stat-new').textContent=unread;
+    document.getElementById('sbEnqCount').textContent=unread||'';
+  }
+}
+
+// ── Settings view ─────────────────────────────────────────────
+var settingsDraft=null;
+function initSettings(){
+  settingsDraft=clone({business:store.business,hero:store.hero,stats:store.stats,sections:store.sections});
+  var orig=clone(settingsDraft);
+  function changed(){ return !eq(settingsDraft,orig); }
+  function renderUnsaved(){ document.getElementById('settingsUnsaved').style.display=changed()?'flex':'none'; }
+
+  // bind fields
+  function bind(id, get, set){
+    var el=document.getElementById(id);
+    if(!el) return;
+    el.value=get();
+    el.addEventListener('input',function(){ set(el.value); renderUnsaved(); updateHeadlinePreview(); });
+  }
+  bind('s-bizName',function(){ return settingsDraft.business.name; },function(v){ settingsDraft.business.name=v; });
+  bind('s-tagline',function(){ return settingsDraft.business.tagline; },function(v){ settingsDraft.business.tagline=v; });
+  bind('s-headline',function(){ return settingsDraft.hero.headline; },function(v){ settingsDraft.hero.headline=v; });
+  bind('s-subtext',function(){ return settingsDraft.hero.subtext; },function(v){ settingsDraft.hero.subtext=v; });
+
+  // stats
+  var sg=document.getElementById('s-statsGrid');
+  sg.innerHTML=settingsDraft.stats.map(function(s,i){
+    return '<div class="field"><label>'+esc(s.label)+'</label><input data-stat="'+i+'" type="text" value="'+esc(s.value)+'"></div>';
+  }).join('');
+  sg.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('input',function(){ settingsDraft.stats[parseInt(inp.getAttribute('data-stat'))].value=inp.value; renderUnsaved(); });
+  });
+
+  // sections
+  var se=document.getElementById('s-sectionsEl');
+  se.innerHTML=settingsDraft.sections.map(function(s,i){
+    return '<div class="toggle-row"><div class="tr-txt"><b>'+esc(s.label)+'</b><span>'+esc(s.desc)+'</span></div><label class="toggle"><input type="checkbox" data-sec="'+i+'"'+(s.on?' checked':'')+'><span class="track"></span><span class="thumb"></span></label></div>';
+  }).join('');
+  se.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+    cb.addEventListener('change',function(){ settingsDraft.sections[parseInt(cb.getAttribute('data-sec'))].on=cb.checked; renderUnsaved(); });
+  });
+
+  function updateHeadlinePreview(){
+    var h=settingsDraft.hero.headline||'';
+    var p=document.getElementById('s-headlinePreview');
+    p.innerHTML='Preview: '+h.split(/(\[[^\]]*\])/).map(function(part){
+      if(part.startsWith('[')){return '<b style="color:var(--blue)">'+esc(part.slice(1,-1))+'</b>';}
+      return '<span style="color:var(--ink);font-weight:700">'+esc(part)+'</span>';
+    }).join('');
+  }
+  updateHeadlinePreview();
+
+  function doSave(){
+    persist('business',settingsDraft.business);
+    persist('hero',settingsDraft.hero);
+    persist('stats',settingsDraft.stats);
+    persist('sections',settingsDraft.sections);
+    orig=clone(settingsDraft);
+    renderUnsaved();
+    toast('Settings saved');
+  }
+  document.getElementById('saveSettings').addEventListener('click', doSave);
+  document.getElementById('saveSettings2').addEventListener('click', doSave);
+  document.getElementById('discardSettings').addEventListener('click', function(){ settingsDraft=clone(orig); initSettings(); });
+}
+
+// ── Packages view ─────────────────────────────────────────────
+var pkgsDraft=null;
+function initPackages(){
+  pkgsDraft=clone(store.packages);
+  var orig=clone(pkgsDraft);
+  function changed(){ return !eq(pkgsDraft,orig); }
+  function renderUnsaved(){ document.getElementById('pkgsUnsaved').style.display=changed()?'flex':'none'; }
+
+  function renderPkgs(){
+    var grid=document.getElementById('pkgGrid');
+    grid.innerHTML=pkgsDraft.map(function(p,pi){
+      return '<div class="card" style="padding:20px;position:relative">'
+        +(p.popular?'<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:10.5px;font-weight:700;padding:4px 12px;border-radius:100px;text-transform:uppercase;white-space:nowrap;z-index:2">Most Popular</div>':'')
+        +'<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn--danger btn--sm" data-del-pkg="'+pi+'">Delete</button></div>'
+        +'<div class="field"><label>Package Name</label><input data-pkg="'+pi+'" data-field="name" type="text" value="'+esc(p.name)+'"></div>'
+        +'<div class="grid-2"><div class="field"><label>Price</label><input data-pkg="'+pi+'" data-field="price" type="text" value="'+esc(p.price)+'"></div>'
+        +'<div class="field"><label>Duration</label><input data-pkg="'+pi+'" data-field="duration" type="text" value="'+esc(p.duration)+'"></div></div>'
+        +'<div class="field"><label>Features</label><div data-feats="'+pi+'">'
+        +p.feats.map(function(f,fi){ return '<div style="display:flex;gap:8px;margin-bottom:8px"><input data-pkg="'+pi+'" data-feat="'+fi+'" type="text" value="'+esc(f)+'" style="flex:1"><button data-del-feat="'+pi+'-'+fi+'" style="width:28px;height:28px;border-radius:7px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);cursor:pointer;flex:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'; }).join('')
+        +'</div><button class="btn btn--ghost btn--sm" data-add-feat="'+pi+'" style="margin-top:4px">+ Add feature</button></div>'
+        +'<div class="field"><label>Button Label</label><input data-pkg="'+pi+'" data-field="button" type="text" value="'+esc(p.button)+'"></div>'
+        +'<div class="toggle-row" style="border-bottom:none;padding-bottom:0"><div class="tr-txt"><b>Most Popular</b><span>Blue border highlight</span></div><label class="toggle"><input type="checkbox" data-popular="'+pi+'"'+(p.popular?' checked':'')+'><span class="track"></span><span class="thumb"></span></label></div>'
+        +'</div>';
+    }).join('');
+    // bind events
+    grid.querySelectorAll('input[data-field]').forEach(function(inp){
+      inp.addEventListener('input',function(){ pkgsDraft[parseInt(inp.getAttribute('data-pkg'))][inp.getAttribute('data-field')]=inp.value; renderUnsaved(); });
+    });
+    grid.querySelectorAll('input[data-feat]').forEach(function(inp){
+      inp.addEventListener('input',function(){ pkgsDraft[parseInt(inp.getAttribute('data-pkg'))].feats[parseInt(inp.getAttribute('data-feat'))]=inp.value; renderUnsaved(); });
+    });
+    grid.querySelectorAll('input[data-popular]').forEach(function(cb){
+      cb.addEventListener('change',function(){ var pi=parseInt(cb.getAttribute('data-popular')); pkgsDraft.forEach(function(p,i){ p.popular=(i===pi); }); renderPkgs(); renderUnsaved(); });
+    });
+    grid.querySelectorAll('[data-del-pkg]').forEach(function(btn){
+      btn.addEventListener('click',function(){ var pi=parseInt(btn.getAttribute('data-del-pkg')); confirm('Delete package?','"'+pkgsDraft[pi].name+'" will be removed.',function(){ pkgsDraft.splice(pi,1); renderPkgs(); renderUnsaved(); }); });
+    });
+    grid.querySelectorAll('[data-add-feat]').forEach(function(btn){
+      btn.addEventListener('click',function(){ pkgsDraft[parseInt(btn.getAttribute('data-add-feat'))].feats.push(''); renderPkgs(); renderUnsaved(); });
+    });
+    grid.querySelectorAll('[data-del-feat]').forEach(function(btn){
+      btn.addEventListener('click',function(){ var parts=btn.getAttribute('data-del-feat').split('-'); pkgsDraft[parseInt(parts[0])].feats.splice(parseInt(parts[1]),1); renderPkgs(); renderUnsaved(); });
+    });
+  }
+  renderPkgs();
+
+  function doSave(){ persist('packages',pkgsDraft); orig=clone(pkgsDraft); renderUnsaved(); toast('Packages saved'); }
+  document.getElementById('savePkgs').onclick=doSave;
+  document.getElementById('savePkgs2').onclick=doSave;
+  document.getElementById('addPkgBtn').onclick=function(){ pkgsDraft.push({id:uid(),name:'New Package',price:'$0',duration:'/ 1 hour',popular:false,button:'Book Now',feats:['Feature one']}); renderPkgs(); renderUnsaved(); };
+}
+
+// ── FAQ view ──────────────────────────────────────────────────
+var faqDraft=null;
+function initFaq(){
+  faqDraft=clone(store.faqs);
+  var orig=clone(faqDraft);
+  function changed(){ return !eq(faqDraft,orig); }
+  function renderUnsaved(){ document.getElementById('faqsUnsaved').style.display=changed()?'flex':'none'; }
+
+  function renderFaqs(){
+    var list=document.getElementById('faqList');
+    list.innerHTML=faqDraft.map(function(f,i){
+      return '<div class="card" style="margin-bottom:12px;padding:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="font-weight:600;color:var(--ink);flex:1;font-size:14px">'+esc(f.q||'Untitled question')+'</div><button class="btn btn--danger btn--sm" data-del-faq="'+i+'">Delete</button></div><div class="field"><label>Question</label><input data-faq="'+i+'" data-field="q" type="text" value="'+esc(f.q)+'"></div><div class="field"><label>Answer</label><textarea data-faq="'+i+'" data-field="a" rows="3">'+esc(f.a)+'</textarea></div></div>';
+    }).join('');
+    list.querySelectorAll('input[data-faq],textarea[data-faq]').forEach(function(inp){
+      inp.addEventListener('input',function(){ faqDraft[parseInt(inp.getAttribute('data-faq'))][inp.getAttribute('data-field')]=inp.value; renderUnsaved(); });
+    });
+    list.querySelectorAll('[data-del-faq]').forEach(function(btn){
+      btn.addEventListener('click',function(){ var i=parseInt(btn.getAttribute('data-del-faq')); confirm('Delete FAQ?','"'+faqDraft[i].q+'" will be removed.',function(){ faqDraft.splice(i,1); renderFaqs(); renderUnsaved(); }); });
+    });
+  }
+  renderFaqs();
+
+  function doSave(){ persist('faqs',faqDraft); orig=clone(faqDraft); renderFaqs(); renderUnsaved(); toast('FAQs saved'); }
+  document.getElementById('saveFaqs').onclick=doSave;
+  document.getElementById('saveFaqs2').onclick=doSave;
+  document.getElementById('addFaqBtn').onclick=function(){ faqDraft.push({id:uid(),q:'New question',a:''}); renderFaqs(); renderUnsaved(); };
+}
+
+// ── Service Areas view ────────────────────────────────────────
+var areasDraft=null;
+function initAreas(){
+  areasDraft=clone(store.areas);
+  var orig=clone(areasDraft);
+  function changed(){ return !eq(areasDraft,orig); }
+  function renderUnsaved(){ document.getElementById('areasUnsaved').style.display=changed()?'flex':'none'; }
+
+  function renderPills(){
+    var wrap=document.getElementById('areaPills');
+    document.getElementById('areaCount').textContent=areasDraft.length+' suburbs';
+    wrap.innerHTML=areasDraft.map(function(a,i){
+      return '<span style="display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:100px;padding:8px 8px 8px 14px;font-size:13.5px;font-weight:500;color:var(--ink)">'+esc(a)+'<button data-rm="'+i+'" style="width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:var(--muted);cursor:pointer" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>';
+    }).join('');
+    wrap.querySelectorAll('[data-rm]').forEach(function(btn){
+      btn.addEventListener('click',function(){ areasDraft.splice(parseInt(btn.getAttribute('data-rm')),1); renderPills(); renderUnsaved(); });
+    });
+  }
+  renderPills();
+
+  document.getElementById('addAreaBtn').onclick=function(){
+    var inp=document.getElementById('areaInput');
+    var v=inp.value.trim(); if(!v) return;
+    if(areasDraft.includes(v)){ toast(v+' is already listed'); return; }
+    areasDraft.push(v); inp.value=''; renderPills(); renderUnsaved();
+  };
+  document.getElementById('areaInput').addEventListener('keydown',function(e){ if(e.key==='Enter') document.getElementById('addAreaBtn').click(); });
+
+  function doSave(){ persist('areas',areasDraft); orig=clone(areasDraft); renderUnsaved(); toast('Service areas saved'); }
+  document.getElementById('saveAreas').onclick=doSave;
+  document.getElementById('saveAreas2').onclick=doSave;
+}
+
+// ── Contact view ──────────────────────────────────────────────
+var contactDraft=null;
+function initContact(){
+  contactDraft=clone(store.contact);
+  var orig=clone(contactDraft);
+  function changed(){ return !eq(contactDraft,orig); }
+  function renderUnsaved(){ document.getElementById('contactUnsaved').style.display=changed()?'flex':'none'; }
+
+  function bind(id,get,set){
+    var el=document.getElementById(id); if(!el) return;
+    el.value=get();
+    el.addEventListener('input',function(){ set(el.value); renderUnsaved(); });
+  }
+  bind('c-phone',function(){ return contactDraft.phone; },function(v){ contactDraft.phone=v; });
+  bind('c-email',function(){ return contactDraft.email; },function(v){ contactDraft.email=v; });
+  bind('c-address',function(){ return contactDraft.address; },function(v){ contactDraft.address=v; });
+  bind('c-wa',function(){ return contactDraft.wa||''; },function(v){ contactDraft.wa=v; });
+
+  var hoursEl=document.getElementById('hoursEl');
+  hoursEl.innerHTML=contactDraft.hours.map(function(h,i){
+    return '<div class="hours-row">'
+      +'<span class="day">'+esc(h.day)+'</span>'
+      +(h.closed?'<span class="closed-lbl">Closed</span>':'<span class="hours-times"><input type="time" data-hour="'+i+'" data-hfield="open" value="'+esc(h.open)+'"><span class="dash">–</span><input type="time" data-hour="'+i+'" data-hfield="close" value="'+esc(h.close)+'"></span>')
+      +'<span class="hours-toggle"><span>Closed</span><label class="toggle"><input type="checkbox" data-hour-closed="'+i+'"'+(h.closed?' checked':'')+'><span class="track"></span><span class="thumb"></span></label></span>'
+      +'</div>';
+  }).join('');
+  hoursEl.querySelectorAll('input[data-hour]').forEach(function(inp){
+    inp.addEventListener('change',function(){ contactDraft.hours[parseInt(inp.getAttribute('data-hour'))][inp.getAttribute('data-hfield')]=inp.value; renderUnsaved(); });
+  });
+  hoursEl.querySelectorAll('input[data-hour-closed]').forEach(function(cb){
+    cb.addEventListener('change',function(){ contactDraft.hours[parseInt(cb.getAttribute('data-hour-closed'))].closed=cb.checked; initContact(); renderUnsaved(); });
+  });
+
+  function doSave(){ persist('contact',contactDraft); orig=clone(contactDraft); renderUnsaved(); toast('Contact details saved'); }
+  document.getElementById('saveContact').onclick=doSave;
+  document.getElementById('saveContact2').onclick=doSave;
+}
+
+// ── initViews — called once after login ───────────────────────
+function initViews(){
+  initSettings();
+  initPackages();
+  initFaq();
+  initAreas();
+  initContact();
+  // event delegation for quick action goto buttons (re-bind after render)
+  document.querySelectorAll('[data-goto]').forEach(function(el){
+    el.addEventListener('click', function(){ goTo(el.getAttribute('data-goto')); });
+  });
+}
+
+// ── initApp — load config, init Supabase, check session ───────
+async function initApp(){
+  try{
+    var res=await fetch('/api/config');
+    var config=await res.json();
+    window.SB_URL=config.supabaseUrl;
+    window.SB_ANON=config.supabaseAnonKey;
+  }catch(e){
+    console.error('Config load failed:',e);
+    return;
+  }
+  if(window.SB_URL && window.SB_ANON && window.supabase){
+    sbClient=window.supabase.createClient(window.SB_URL, window.SB_ANON);
+    // check existing session
+    var {data:{session}}=await sbClient.auth.getSession();
+    if(session){ showApp(); return; }
+  }
+  initLogin();
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+})();
+</script>
+</body>
+</html>
