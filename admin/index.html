@@ -1133,6 +1133,19 @@ function initHeroPhotoUpload(){
     var token=localStorage.getItem('sb_access_token');
     if(!token){ status.textContent='Not authenticated'; return; }
     status.textContent='Uploading…';
+
+    // fetch existing hero photo URL before uploading new one
+    var oldFileName=null;
+    if(sbClient){
+      var existing=await sbClient.from('settings').select('value').eq('key','hero_photo_url').maybeSingle();
+      if(existing.data&&existing.data.value){
+        try{
+          var oldUrl=JSON.parse(existing.data.value);
+          if(oldUrl) oldFileName=oldUrl.split('/').pop();
+        }catch(e){}
+      }
+    }
+
     var ext=file.name.split('.').pop();
     var filename='hero_'+Date.now()+'.'+ext;
     try{
@@ -1144,6 +1157,18 @@ function initHeroPhotoUpload(){
       if(!uploadRes.ok){ var t=await uploadRes.text(); status.textContent='Upload failed: '+t; return; }
       var publicUrl=window.SB_URL+'/storage/v1/object/public/photos/'+filename;
       await sbSave('hero_photo_url',publicUrl);
+
+      // delete old photo from storage if different from new
+      if(oldFileName&&oldFileName!==filename){
+        fetch(window.SB_URL+'/storage/v1/object/photos/'+oldFileName,{
+          method:'DELETE',
+          headers:{'apikey':window.SB_ANON,'Authorization':'Bearer '+token}
+        }).then(function(r){
+          if(r.ok){ console.log('Old hero photo deleted:',oldFileName); }
+          else{ console.warn('Failed to delete old hero photo:',oldFileName,r.status); }
+        }).catch(function(e){ console.warn('Error deleting old hero photo:',e); });
+      }
+
       status.textContent='Saved ✓';
       setTimeout(function(){ status.textContent=''; },3000);
     }catch(e){ status.textContent='Error: '+e.message; }

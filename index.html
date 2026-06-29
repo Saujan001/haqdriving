@@ -206,6 +206,7 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
 .area-pill:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
 .area-pill svg{width:16px;height:16px;color:var(--blue);flex:none}
 .map-placeholder{border-radius:var(--r-card);overflow:hidden;aspect-ratio:21/7;border:1px solid var(--line);box-shadow:var(--shadow-sm);background:var(--bg-grey);display:grid;place-items:center;color:var(--muted);font-size:14px}
+#maps-iframe{width:100%;height:450px;border:none;border-radius:12px;display:block}
 
 /* FAQ */
 .faq-list{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
@@ -368,6 +369,7 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
   .area-grid{display:flex;flex-wrap:wrap;gap:9px}
   .area-pill{min-height:44px;font-size:14px;padding:0 14px}
   .map-placeholder{aspect-ratio:auto;height:200px}
+  #maps-iframe{height:280px}
   .faq-q{padding:17px 16px;font-size:15.5px}
   .faq-q .chev{width:26px;height:26px}
   .faq-a-inner{padding:0 16px 18px;font-size:14.5px}
@@ -814,7 +816,7 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
     <div class="map-placeholder" id="mapPlaceholder">
       <span>Map — Sydney NSW</span>
     </div>
-    <iframe id="maps-iframe" src="" width="100%" height="100%" style="border:none;border-radius:var(--r-card);display:none" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Google Maps"></iframe>
+    <iframe id="maps-iframe" src="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Google Maps" style="display:none"></iframe>
   </div>
 </section>
 
