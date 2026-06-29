@@ -269,7 +269,10 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
 .footer-col a,.footer-col li{font-size:14px;color:#A6BAD2}
 .footer-col a:hover{color:#fff}
 .footer-areas{font-size:13.5px;color:#A6BAD2;line-height:1.7}
-.footer-bar{border-top:1px solid rgba(255,255,255,.1);padding:20px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:13px;color:#7E94B0}
+.footer-bar{border-top:1px solid rgba(255,255,255,.1);padding:20px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:13px;color:#7E94B0}
+.footer-credit{font-size:12px;color:rgba(255,255,255,.5)}
+.footer-credit span{color:rgba(255,255,255,.8)}
+@media(max-width:700px){.footer-bar{flex-direction:column;align-items:center;text-align:center;gap:6px}}
 
 /* Sticky CTA */
 .sticky-cta{display:none;position:fixed;left:16px;right:16px;bottom:16px;z-index:50}
@@ -396,12 +399,10 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
       </span>
     </a>
     <nav class="nav-links">
-      <a href="#why">Why Us</a>
       <a href="#lessons">Lessons</a>
       <a href="#packages">Packages</a>
       <a href="#areas">Areas</a>
       <a href="#reviews">Reviews</a>
-      <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
     </nav>
     <div class="nav-right">
@@ -972,7 +973,7 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
     </div>
     <div class="footer-bar">
       <span>© 2026 Haq Driving School. All rights reserved.</span>
-      <span>Driving School Sydney NSW</span>
+      <span class="footer-credit">Designed by <span>SaujanTech</span></span>
     </div>
   </div>
 </footer>
