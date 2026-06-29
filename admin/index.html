@@ -610,7 +610,8 @@ h1,h2,h3,h4{color:var(--ink);letter-spacing:-.02em;line-height:1.2}
         <button class="btn btn--ghost" id="pm-fileBtn">Choose Image</button>
         <span id="pm-fileName" style="font-size:13px;color:var(--muted);margin-left:10px">No file chosen</span>
       </div>
-      <div class="field"><label>Student Name</label><input id="pm-name" type="text" placeholder="e.g. Aisha M., Parramatta"></div>
+      <div class="field"><label>Student Name</label><input id="pm-name" type="text" placeholder="e.g. Aisha M."></div>
+      <div class="field"><label>Suburb</label><input id="pm-suburb" type="text" placeholder="e.g. Parramatta"></div>
       <div class="field"><label>Quote (optional)</label><textarea id="pm-quote" rows="3" placeholder="e.g. Passed first go! Amazing instructor."></textarea></div>
     </div>
     <div class="modal-foot">
@@ -1133,20 +1134,21 @@ function initPhotos(){
         +'<div style="padding:12px">'
         +(p.student_name?'<div style="font-weight:600;font-size:14px;margin-bottom:4px">'+esc(p.student_name)+'</div>':'')
         +(p.quote?'<div style="font-size:12px;color:var(--muted);line-height:1.5">'+esc(p.quote)+'</div>':'')
-        +'<button class="btn btn--danger btn--sm" data-del-photo="'+esc(p.id)+'" data-del-filename="'+esc(p.filename||'')+'" style="margin-top:10px;width:100%">Delete</button>'
+        +'<button class="btn btn--danger btn--sm" data-del-photo="'+esc(p.id)+'" data-del-url="'+esc(p.url||'')+'" style="margin-top:10px;width:100%">Delete</button>'
         +'</div>'
         +'</div>';
     }).join('');
     grid.querySelectorAll('[data-del-photo]').forEach(function(btn){
       btn.addEventListener('click',function(){
         var pid=btn.getAttribute('data-del-photo');
-        var fname=btn.getAttribute('data-del-filename');
+        var photoUrl=btn.getAttribute('data-del-url');
         confirm('Delete photo?','This photo will be permanently removed.',async function(){
           if(!sbClient) return;
           await sbClient.from('photos').delete().eq('id',pid);
-          if(fname){
-            var token=localStorage.getItem('sb_access_token');
-            if(token) await fetch(window.SB_URL+'/storage/v1/object/photos/'+fname,{method:'DELETE',headers:{'Authorization':'Bearer '+token}});
+          if(photoUrl){
+            var storageToken=localStorage.getItem('sb_access_token');
+            var fname=photoUrl.split('/photos/').pop();
+            if(storageToken&&fname) await fetch(window.SB_URL+'/storage/v1/object/photos/'+fname,{method:'DELETE',headers:{'Authorization':'Bearer '+storageToken}});
           }
           loadPhotos();
           toast('Photo deleted');
@@ -1169,7 +1171,7 @@ function initPhotos(){
 
   document.getElementById('addPhotoBtn').addEventListener('click',function(){
     pmFile.value=''; pmFileName.textContent='No file chosen'; pmPreviewImg.src=''; pmPreviewImg.style.display='none';
-    document.getElementById('pm-name').value=''; document.getElementById('pm-quote').value='';
+    document.getElementById('pm-name').value=''; document.getElementById('pm-suburb').value=''; document.getElementById('pm-quote').value='';
     pmStatus.style.display='none'; pmStatus.textContent='';
     photoModal.style.display='grid';
   });
@@ -1199,9 +1201,20 @@ function initPhotos(){
       });
       if(!uploadRes.ok){ var t=await uploadRes.text(); pmStatus.textContent='Upload failed: '+t; pmUploadBtn.disabled=false; return; }
       var publicUrl=window.SB_URL+'/storage/v1/object/public/photos/'+filename;
-      var record={url:publicUrl,filename:filename,student_name:document.getElementById('pm-name').value.trim()||null,quote:document.getElementById('pm-quote').value.trim()||null};
-      var {error}=await sbClient.from('photos').insert([record]);
-      if(error){ pmStatus.textContent='DB error: '+error.message; pmUploadBtn.disabled=false; return; }
+      var studentName=document.getElementById('pm-name').value.trim()||null;
+      var suburb=document.getElementById('pm-suburb').value.trim()||null;
+      var quote=document.getElementById('pm-quote').value.trim()||null;
+      var insertRes=await fetch(window.SB_URL+'/rest/v1/photos',{
+        method:'POST',
+        headers:{
+          'apikey':window.SB_ANON,
+          'Authorization':'Bearer '+token,
+          'Content-Type':'application/json',
+          'Prefer':'return=minimal'
+        },
+        body:JSON.stringify({url:publicUrl,student_name:studentName,suburb:suburb,quote:quote,sort_order:0})
+      });
+      if(!insertRes.ok){ var it=await insertRes.text(); pmStatus.textContent='DB error: '+it; pmUploadBtn.disabled=false; return; }
       pmStatus.textContent='Photo saved ✓';
       setTimeout(function(){ photoModal.style.display='none'; pmUploadBtn.disabled=false; loadPhotos(); toast('Photo added'); },800);
     }catch(e){ pmStatus.textContent='Error: '+e.message; pmUploadBtn.disabled=false; }
