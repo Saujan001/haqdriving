@@ -228,8 +228,10 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
 .contact-row .cl{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
 .contact-row .cv{font-size:15.5px;font-weight:600;color:var(--ink)}
 .contact-row .cv:hover{color:var(--blue)}
-.hours-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px solid #F1F5F9;color:#374151}
+.hours-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px;border-bottom:1px solid #F1F5F9;color:#374151}
 .hours-row:last-child{border-bottom:none}
+.hours-day{font-weight:500;color:#1E293B}
+.hours-time{color:#64748B}
 
 /* Form */
 .form-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px;box-shadow:var(--shadow-md)}
@@ -1185,35 +1187,36 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
       var hoursEl = document.getElementById('contact-hours');
       if (hoursRaw && hoursEl) {
         try {
+          var hours = typeof hoursRaw === 'string' ? JSON.parse(hoursRaw) : hoursRaw;
           var dayKeys = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
-          var dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+          var dayNames = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
           var hoursHTML = '';
 
-          if (Array.isArray(hoursRaw)) {
-            // Admin format: [{day:'Monday',open:'06:00',close:'20:00',closed:false},...]
-            hoursHTML = hoursRaw.map(function(h) {
-              if (h.closed) {
-                return '<div class="hours-row"><span>' + h.day.slice(0,3) + '</span><span>Closed</span></div>';
-              }
-              return '<div class="hours-row"><span>' + h.day.slice(0,3) + '</span><span>' + h.open + ' – ' + h.close + '</span></div>';
+          if (Array.isArray(hours)) {
+            // Admin array format: [{day:'Monday',open:'06:00',close:'20:00',closed:false},...]
+            hoursHTML = hours.map(function(h) {
+              return '<div class="hours-row">'
+                + '<span class="hours-day">' + h.day + '</span>'
+                + '<span class="hours-time">' + (h.closed ? 'Closed' : h.open + ' – ' + h.close) + '</span>'
+                + '</div>';
             }).join('');
           } else {
-            // Object format: {monday:{open:'06:00',close:'20:00',closed:false},...}
-            var parsed = (typeof hoursRaw === 'string') ? JSON.parse(hoursRaw) : hoursRaw;
+            // Object format: {monday:{open:'6:00am',close:'8:00pm',closed:false},...}
             hoursHTML = dayKeys.map(function(day, i) {
-              var d = parsed[day];
+              var d = hours[day];
               if (!d) return '';
-              if (d.closed) {
-                return '<div class="hours-row"><span>' + dayNames[i] + '</span><span>Closed</span></div>';
-              }
-              return '<div class="hours-row"><span>' + dayNames[i] + '</span><span>' + d.open + ' – ' + d.close + '</span></div>';
+              return '<div class="hours-row">'
+                + '<span class="hours-day">' + dayNames[i] + '</span>'
+                + '<span class="hours-time">' + (d.closed ? 'Closed' : d.open + ' – ' + d.close) + '</span>'
+                + '</div>';
             }).join('');
           }
 
           if (hoursHTML) { hoursEl.innerHTML = hoursHTML; }
-          console.log('Applying setting: hours', hoursRaw);
+          console.log('Hours applied:', hours);
         } catch(e) {
           console.error('Hours parse error:', e);
+          hoursEl.innerHTML = '<p>Mon–Sun: 6:00am – 8:00pm</p>';
         }
       }
 
