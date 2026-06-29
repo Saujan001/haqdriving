@@ -603,7 +603,7 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
       </div>
     </div>
     <div class="carousel" id="carousel-stories">
-    <div class="hscroll story-scroll" id="scroller-stories">
+    <div class="hscroll story-scroll" id="success-photos-container">
       <article class="story-card">
         <div class="story-photo"><span>student + licence</span></div>
         <div class="story-body">
@@ -1036,7 +1036,9 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
     btn.addEventListener('click', function () {
       var id = btn.getAttribute('data-carousel');
       var dir = parseInt(btn.getAttribute('data-dir'), 10);
-      var scroller = document.getElementById('scroller-' + id);
+      var scroller = id === 'stories'
+        ? document.getElementById('success-photos-container')
+        : document.getElementById('scroller-' + id);
       if (!scroller) return;
       scroller.scrollBy({ left: dir * Math.max(scroller.clientWidth - 48, 240), behavior: 'smooth' });
     });
@@ -1044,7 +1046,9 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
 
   // ── Mobile carousels: dots ───────────────────────────────
   ['stories', 'packages'].forEach(function (id) {
-    var scroller = document.getElementById('scroller-' + id);
+    var scroller = id === 'stories'
+      ? document.getElementById('success-photos-container')
+      : document.getElementById('scroller-' + id);
     var dotsEl = document.getElementById('dots-' + id);
     if (!scroller || !dotsEl) return;
     var cards = Array.from(scroller.children);
@@ -1072,6 +1076,42 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
     }, { passive: true });
   });
 
+  // ── Success Photos ────────────────────────────────────────
+  async function loadPhotos() {
+    if (!window.SB_URL || !window.SB_ANON) return;
+    try {
+      var res = await fetch(
+        window.SB_URL + '/rest/v1/photos?select=*&order=sort_order.asc',
+        { headers: { 'apikey': window.SB_ANON, 'Authorization': 'Bearer ' + window.SB_ANON } }
+      );
+      var photos = await res.json();
+      console.log('Photos loaded:', photos);
+      if (Array.isArray(photos) && photos.length > 0) {
+        renderPhotos(photos);
+      }
+    } catch (e) {
+      console.error('Photos fetch error:', e);
+    }
+  }
+
+  function renderPhotos(photos) {
+    var container = document.getElementById('success-photos-container');
+    if (!container) { console.error('success-photos-container not found'); return; }
+    if (!photos || photos.length === 0) { container.innerHTML = ''; return; }
+    container.innerHTML = photos.map(function (photo) {
+      return '<article class="story-card">'
+        + '<div class="story-photo" style="aspect-ratio:16/10;background:#f1f5f9;overflow:hidden">'
+        + '<img src="' + photo.url + '" alt="' + (photo.student_name || 'Student') + '" loading="lazy" style="width:100%;height:100%;object-fit:cover">'
+        + '</div>'
+        + '<div class="story-body">'
+        + '<span class="stars" style="color:#FBBF24;font-size:18px;margin-bottom:11px;display:block">★★★★★</span>'
+        + (photo.quote ? '<p class="story-quote">"' + photo.quote + '"</p>' : '')
+        + '<p class="story-name">— ' + (photo.student_name || 'Student') + (photo.suburb ? ', ' + photo.suburb : '') + '</p>'
+        + '</div>'
+        + '</article>';
+    }).join('');
+  }
+
   // ── initApp: load config then wire form ──────────────────
   async function initApp() {
     try {
@@ -1088,6 +1128,8 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
     if (window.SB_URL && window.SB_ANON && window.supabase) {
       sbClient = window.supabase.createClient(window.SB_URL, window.SB_ANON);
     }
+
+    await loadPhotos();
 
     // ── Settings: fetch from Supabase with 30s cache ────────────
     if (sbClient) {
