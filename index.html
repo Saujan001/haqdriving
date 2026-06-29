@@ -229,6 +229,10 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
 .contact-row .cl{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
 .contact-row .cv{font-size:15.5px;font-weight:600;color:var(--ink)}
 .contact-row .cv:hover{color:var(--blue)}
+.dynamic-content{visibility:hidden}.dynamic-content.loaded{visibility:visible;transition:opacity 0.2s ease}
+.skeleton-text{display:inline-block;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:skeleton-pulse 1.5s infinite;border-radius:4px;color:transparent!important;min-width:120px;min-height:1em}
+.skeleton-text *{visibility:hidden}
+@keyframes skeleton-pulse{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .hours-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px;border-bottom:1px solid #F1F5F9;color:#374151}
 .hours-row:last-child{border-bottom:none}
 .hours-day{font-weight:500;color:#1E293B}
@@ -415,7 +419,7 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
     <div class="nav-right">
       <a href="tel:+61450000000" class="nav-phone" id="navPhone">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span id="navPhoneText">0450 000 000</span>
+        <span id="navPhoneText" class="dynamic-content"></span>
       </a>
       <a href="#contact" class="btn btn--primary">Book a Lesson</a>
       <button class="hamburger" id="openDrawer" aria-label="Open menu">
@@ -447,7 +451,7 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
     <a href="#contact">Contact</a>
   </nav>
   <div class="drawer-cta">
-    <a href="tel:+61450000000" class="btn btn--ghost btn--block" id="drawerPhone">Call <span id="drawerPhoneText">0450 000 000</span></a>
+    <a href="tel:+61450000000" class="btn btn--ghost btn--block" id="drawerPhone">Call <span id="drawerPhoneText" class="dynamic-content"></span></a>
     <a href="#contact" class="btn btn--primary btn--block">Book a Lesson</a>
   </div>
 </aside>
@@ -462,8 +466,8 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Serving Sydney &amp; Surrounding Suburbs
       </span>
-      <h1 id="heroH1">Learn to Drive with <span class="accent">Confidence</span></h1>
-      <p class="hero-sub" id="heroSub">Professional driving lessons across Sydney. Patient, qualified instruction in automatic vehicles — available 7 days a week to fit your schedule.</p>
+      <h1 id="heroH1" class="skeleton-text">Learn to Drive with <span class="accent">Confidence</span></h1>
+      <p class="hero-sub skeleton-text" id="heroSub">Professional driving lessons across Sydney. Patient, qualified instruction in automatic vehicles — available 7 days a week to fit your schedule.</p>
       <div class="hero-ctas">
         <a href="#contact" class="btn btn--primary btn--lg">Book a Lesson</a>
         <a href="tel:+61450000000" class="btn btn--ghost btn--lg">
@@ -864,19 +868,19 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
       <div class="contact-list">
         <div class="contact-row">
           <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-          <div><div class="cl">Phone</div><a href="tel:+61450000000" class="cv" id="contactPhone">0450 000 000</a></div>
+          <div><div class="cl">Phone</div><a href="#" class="cv dynamic-content" id="contactPhone"></a></div>
         </div>
         <div class="contact-row">
           <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
-          <div><div class="cl">Email</div><a href="mailto:info@haqdriving.com.au" class="cv" id="contactEmail">info@haqdriving.com.au</a></div>
+          <div><div class="cl">Email</div><a href="#" class="cv dynamic-content" id="contactEmail"></a></div>
         </div>
         <div class="contact-row">
           <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-          <div><div class="cl">Location</div><div class="cv" id="contactAddress">Sydney NSW, Australia</div></div>
+          <div><div class="cl">Location</div><div class="cv dynamic-content" id="contactAddress"></div></div>
         </div>
         <div class="contact-row">
           <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></span>
-          <div><div class="cl">Hours</div><div class="cv" id="contact-hours">Mon–Sun · 6:00am – 8:00pm</div></div>
+          <div><div class="cl">Hours</div><div class="cv dynamic-content" id="contact-hours"></div></div>
         </div>
       </div>
     </div>
@@ -919,7 +923,7 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
           <span class="btn-text">Send Enquiry</span>
           <span class="spinner"></span>
         </button>
-        <p class="form-foot">Or call us on <a href="tel:+61450000000" id="formPhone">0450 000 000</a></p>
+        <p class="form-foot">Or call us on <a href="#" class="dynamic-content" id="formPhone"></a></p>
         <p class="form-error" id="formError" style="display:none;color:#DC2626;font-size:13px;text-align:center;margin-top:10px">Something went wrong. Please try again or call us directly.</p>
       </form>
       <div class="form-success" id="formSuccess">
@@ -971,9 +975,9 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
       <div class="footer-col">
         <h4>Contact</h4>
         <ul>
-          <li><a href="tel:+61450000000" id="footerPhone">0450 000 000</a></li>
-          <li><a href="mailto:info@haqdriving.com.au" id="footerEmail">info@haqdriving.com.au</a></li>
-          <li id="footerAddress">Sydney NSW, Australia</li>
+          <li><a href="#" class="dynamic-content" id="footerPhone"></a></li>
+          <li><a href="#" class="dynamic-content" id="footerEmail"></a></li>
+          <li class="dynamic-content" id="footerAddress"></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1133,31 +1137,52 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
 
     await loadPhotos();
 
-    // ── Settings: fetch from Supabase with 30s cache ────────────
+    // ── Settings: cache-first then background refresh ────────────
+    var CACHE_KEY = 'haq_settings';
+    var CACHE_TIME_KEY = 'haq_settings_time';
+    var TTL = 30000;
+
+    function markLoaded() {
+      var h1 = document.getElementById('heroH1');
+      var sub = document.getElementById('heroSub');
+      if (h1) h1.classList.remove('skeleton-text');
+      if (sub) sub.classList.remove('skeleton-text');
+      document.querySelectorAll('.dynamic-content').forEach(function(el) { el.classList.add('loaded'); });
+    }
+
+    function fetchSettingsFromSupabase(cb) {
+      if (!sbClient) return;
+      sbClient.from('settings').select('key,value').then(function(r) {
+        if (r.error) { console.warn('Settings fetch error:', r.error); return; }
+        var obj = {};
+        (r.data || []).forEach(function(row) {
+          try { obj[row.key] = JSON.parse(row.value); } catch(e) { obj[row.key] = row.value; }
+        });
+        localStorage.setItem(CACHE_KEY, JSON.stringify(obj));
+        localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+        if (cb) cb(obj);
+      });
+    }
+
     if (sbClient) {
-      var CACHE_KEY = 'r2d_settings';
-      var CACHE_TIME_KEY = 'r2d_settings_time';
-      var TTL = 30000;
       var cachedRaw = localStorage.getItem(CACHE_KEY);
       var cachedTime = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0');
-      if (cachedRaw && (Date.now() - cachedTime < TTL)) {
+      var cacheValid = cachedRaw && (Date.now() - cachedTime < TTL);
+      if (cacheValid) {
         try {
           var cachedSettings = JSON.parse(cachedRaw);
-          console.log('Settings loaded from cache:', cachedSettings);
           applySettings(cachedSettings);
-        } catch (e) { console.warn('Settings cache parse error:', e); }
+          markLoaded();
+          // Background refresh if cache is stale (>5s old)
+          if (Date.now() - cachedTime > 5000) {
+            fetchSettingsFromSupabase(function(fresh) { applySettings(fresh); markLoaded(); });
+          }
+        } catch(e) {
+          console.warn('Settings cache parse error:', e);
+          fetchSettingsFromSupabase(function(obj) { applySettings(obj); markLoaded(); });
+        }
       } else {
-        sbClient.from('settings').select('key,value').then(function (r) {
-          if (r.error) { console.warn('Settings fetch error:', r.error); return; }
-          var obj = {};
-          (r.data || []).forEach(function (row) {
-            try { obj[row.key] = JSON.parse(row.value); } catch (e) { obj[row.key] = row.value; }
-          });
-          localStorage.setItem(CACHE_KEY, JSON.stringify(obj));
-          localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
-          console.log('Settings loaded from Supabase:', obj);
-          applySettings(obj);
-        });
+        fetchSettingsFromSupabase(function(obj) { applySettings(obj); markLoaded(); });
       }
     }
 
