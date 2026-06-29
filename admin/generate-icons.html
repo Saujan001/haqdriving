@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate Icons</title></head>
+<body>
+<button onclick="generateAll()">Generate All Icons</button>
+<div id="previews"></div>
+<script>
+var sizes = [72,96,128,144,152,192,384,512];
+
+function generateIcon(size) {
+  var canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  var ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#1E3A5F';
+  ctx.fillRect(0, 0, size, size);
+
+  // Inner accent square
+  ctx.fillStyle = '#2563EB';
+  var pad = size * 0.15;
+  ctx.fillRect(pad, pad, size - pad*2, size - pad*2);
+
+  // Text
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold ' + (size * 0.35) + 'px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('HD', size/2, size/2);
+
+  return canvas;
+}
+
+function generateAll() {
+  var previews = document.getElementById('previews');
+  previews.innerHTML = '';
+  sizes.forEach(function(size) {
+    var canvas = generateIcon(size);
+    previews.appendChild(canvas);
+
+    var link = document.createElement('a');
+    link.download = 'icon-' + size + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.textContent = 'Download ' + size + 'x' + size;
+    link.style.display = 'block';
+    previews.appendChild(link);
+  });
+}
+</script>
+</body>
+</html>
