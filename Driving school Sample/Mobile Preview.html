@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Right 2 Drive — Mobile Preview</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: radial-gradient(1200px 600px at 50% -10%, #2c3champ 0, #1b1f27 60%, #14171d 100%);
+    background: radial-gradient(1200px 600px at 50% -10%, #2c333f 0, #1b1f27 60%, #14171d 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+    padding: 30px 16px 44px; min-height: 100%;
+  }
+  .head { text-align: center; color: #cdd6e4; }
+  .head h1 { margin: 0 0 4px; font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+  .head p { margin: 0; font-size: 13px; color: #8b97a8; }
+
+  .device {
+    position: relative; width: 390px; max-width: 100%;
+    height: min(844px, calc(100vh - 150px));
+    background: #0b0d11; border-radius: 54px; padding: 13px;
+    box-shadow: 0 0 0 2px #2b2f37, 0 30px 70px rgba(0,0,0,.55), inset 0 0 0 6px #16191f;
+  }
+  .screen {
+    position: relative; width: 100%; height: 100%;
+    border-radius: 42px; overflow: hidden; background: #fff;
+  }
+  .screen iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 132px; height: 30px; background: #0b0d11;
+    border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; z-index: 5;
+  }
+  .hint { font-size: 12px; color: #6f7b8d; display: flex; align-items: center; gap: 6px; }
+  .hint svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Right 2 Drive — Mobile</h1>
+    <p>iPhone 14 · 390px viewport</p>
+  </div>
+  <div class="device">
+    <div class="screen">
+      <div class="notch"></div>
+      <iframe src="Right 2 Drive.html" title="Right 2 Drive mobile" loading="eager"></iframe>
+    </div>
+  </div>
+  <div class="hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    Scroll inside the phone · swipe the lesson, review &amp; package rows sideways
+  </div>
+</body>
+</html>
