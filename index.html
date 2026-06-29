@@ -394,8 +394,8 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
     <a href="#top" class="brand">
       <span class="badge">HD</span>
       <span class="brand-text">
-        <span class="name">Haq Driving</span>
-        <span class="tag">Driving School · Sydney NSW</span>
+        <span class="name" id="navBrandName">Haq Driving</span>
+        <span class="tag" id="navBrandTag">Driving School · Sydney NSW</span>
       </span>
     </a>
     <nav class="nav-links">
@@ -932,7 +932,7 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
       <div>
         <a href="#top" class="brand">
           <span class="badge">HD</span>
-          <span class="brand-text"><span class="name">Haq Driving</span><span class="tag">Driving School · Sydney NSW</span></span>
+          <span class="brand-text"><span class="name" id="footerBrandName">Haq Driving</span><span class="tag" id="footerBrandTag">Driving School · Sydney NSW</span></span>
         </a>
         <p class="footer-blurb">Friendly, professional driving lessons across Sydney. Helping learners pass with confidence.</p>
         <div class="social-row">
@@ -1117,6 +1117,21 @@ h1,h2,h3,h4{color:var(--ink);line-height:1.15;letter-spacing:-0.02em;font-weight
       function setHref(id, href) {
         var el = document.getElementById(id);
         if (el) el.setAttribute('href', href);
+      }
+
+      // Business name & tagline
+      var businessName = s['business_name'] || s['biz_name'] || null;
+      var tagline = s['tagline'] || s['biz_tagline'] || null;
+      if (businessName) {
+        set('navBrandName', businessName);
+        set('footerBrandName', businessName);
+        document.title = businessName + ' — Sydney NSW';
+        console.log('Applying setting: business_name', businessName);
+      }
+      if (tagline) {
+        set('navBrandTag', tagline);
+        set('footerBrandTag', tagline);
+        console.log('Applying setting: tagline', tagline);
       }
 
       // Phone

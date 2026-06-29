@@ -457,10 +457,6 @@ h1,h2,h3,h4{color:var(--ink);letter-spacing:-.02em;line-height:1.2}
             </div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-head"><h3>Section Visibility</h3></div>
-          <div class="card-pad" style="padding-top:6px;padding-bottom:6px" id="s-sectionsEl"></div>
-        </div>
       </div>
     </div>
 
@@ -851,7 +847,7 @@ async function loadDashboard(){
 // ── Settings view ─────────────────────────────────────────────
 var settingsDraft=null;
 function initSettings(){
-  settingsDraft=clone({business:store.business,hero:store.hero,stats:store.stats,sections:store.sections});
+  settingsDraft=clone({business:store.business,hero:store.hero,stats:store.stats});
   var orig=clone(settingsDraft);
   function changed(){ return !eq(settingsDraft,orig); }
   function renderUnsaved(){ document.getElementById('settingsUnsaved').style.display=changed()?'flex':'none'; }
@@ -900,13 +896,13 @@ function initSettings(){
     persist('business',settingsDraft.business);
     persist('hero',settingsDraft.hero);
     persist('stats',settingsDraft.stats);
-    persist('sections',settingsDraft.sections);
     sbSave('biz_name',settingsDraft.business.name);
     sbSave('biz_tagline',settingsDraft.business.tagline);
+    sbSave('business_name',settingsDraft.business.name);
+    sbSave('tagline',settingsDraft.business.tagline);
     sbSave('hero_headline',settingsDraft.hero.headline);
     sbSave('hero_subtext',settingsDraft.hero.subtext);
     sbSave('stats',settingsDraft.stats);
-    sbSave('sections',settingsDraft.sections);
     orig=clone(settingsDraft);
     renderUnsaved();
     toast('Settings saved');
